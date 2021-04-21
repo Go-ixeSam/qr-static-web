@@ -5,16 +5,27 @@ import Qrcode from "./assets/img/qrcode-default.png";
 import rightIcon from "./assets/img/right-icon.png";
 import APICalling from "./api/APICalling";
 function App() {
-  const [APIkey, setAPIkey] = useState(
-    "AIzaSyA20DZM-KQ30vUa63XoopRiJIzyis_t21I"
-  );
-  const [cordinate, setCordinate] = useState({
-    address: "44 đường số 9 phường 13 quận 6 thành phố hồ chí minh",
-    key: APIkey,
+  const [address, setAddress] = useState({
+    lat: "",
+    long: "",
+    place_id: "",
+    formatted_address: "",
   });
   React.useEffect(() => {
-    APICalling.covertAddressToCondinate().then((res) => {
-      console.log("đây nè= ", res);
+    APICalling.covertAddressToCondinate(
+      "44 đường số 9 phường 13 quận 6 thành phố hồ chí minh"
+    ).then((res) => {
+      const resutl = res.data.results[0];
+      console.log("đây nè= ", res.data.results[0]);
+      const tmp = {
+        ...address,
+        lat: resutl.formatted_address,
+        place_id: resutl.place_id,
+        long: resutl.geometry.location.lng,
+        formatted_address:resutl.formatted_address,
+        lat: resutl.geometry.location.lat,
+      };
+      setAddress(tmp);
     });
   }, []);
   const size = 20;
@@ -47,7 +58,7 @@ function App() {
           //   "https://www.google.com/maps/search/?api=1&query=10.752206,106.6274087&query_place_id=ChIJofr-9SosdTERlbh4EVWpi8g"
           // }
           >
-            44 đường số 9 phương 25 quận 9
+            {address.formatted_address}
             <img src={rightIcon} width={size} height={size} />
           </a>
 
