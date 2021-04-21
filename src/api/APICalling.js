@@ -2,9 +2,12 @@
 import React from "react";
 const axios = require("axios");
 const APICalling = {
-  getQRCodeInfo: (params) => {
-    // const url = "";
-    return axios.default.get();
+  getQRCodeInfo: (exchangeID) => {
+    return axios.default.get(
+      `
+    http://54.179.74.214:8080/api/Shipper/GetInformationExchange?Id=${exchangeID}`,
+      null
+    );
   },
   covertAddressToCondinate: (address) => {
     const url = "/api/geocode/json";

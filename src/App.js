@@ -5,6 +5,7 @@ import Qrcode from "./assets/img/qrcode-default.png";
 import rightIcon from "./assets/img/right-icon.png";
 import APICalling from "./api/APICalling";
 function App() {
+  const [exchangeData, setExchangeData] = useState({});
   const [address, setAddress] = useState({
     lat: "",
     long: "",
@@ -12,29 +13,52 @@ function App() {
     formatted_address: "",
   });
   React.useEffect(() => {
-    APICalling.covertAddressToCondinate(
-      "44 đường số 9 phường 13 quận 6 thành phố hồ chí minh"
-    ).then((res) => {
-      const resutl = res.data.results[0];
-      console.log("đây nè= ", res.data.results[0]);
-      const tmp = {
-        ...address,
-        lat: resutl.formatted_address,
-        place_id: resutl.place_id,
-        long: resutl.geometry.location.lng,
-        formatted_address:resutl.formatted_address,
-        lat: resutl.geometry.location.lat,
-      };
-      setAddress(tmp);
-    });
+    APICalling.getQRCodeInfo("77986141-cc78-498f-b8b4-e4de5ecf3b37").then(
+      (res) => {
+        const data = res.data;
+        setExchangeData({
+          giver: data.fullNameHost,
+          receiver: data.fullNameReceiver,
+          phone: "",
+          receiverAddress: data.receiverAddress,
+          quantity: data.quantity,
+          vegetable: data.vegNameReceive,
+          qrcode: data.qrCode,
+        });
+        APICalling.covertAddressToCondinate(data.receiverAddress).then(
+          (res) => {
+            const resutl = res.data.results[0];
+            const tmp = {
+              ...address,
+              lat: resutl.formatted_address,
+              place_id: resutl.place_id,
+              long: resutl.geometry.location.lng,
+              formatted_address: resutl.formatted_address,
+              lat: resutl.geometry.location.lat,
+            };
+            setAddress(tmp);
+          }
+        );
+      }
+    );
   }, []);
   const size = 20;
+  const qrcodeSize = 200;
   const moMargin = {
     margin: 0,
   };
+  const {
+    giver,
+    receiver,
+    phone,
+    receiverAddress,
+    quantity,
+    vegetable,
+    qrcode,
+  } = exchangeData;
   return (
     <React.Fragment>
-      <img src={Qrcode} />
+      <img src={qrcode} height={qrcodeSize} width={qrcodeSize} />
       <div
         style={{
           display: "flex",
@@ -44,6 +68,7 @@ function App() {
         }}
       >
         <div className="styling">
+          <p>Người cho </p>
           <p>Người nhận</p>
           <p>Số điện thoại</p>
           <p>Địa chỉ</p>
@@ -51,19 +76,18 @@ function App() {
           <p>Số lượng</p>
         </div>
         <div style={{ marginLeft: 10 }}>
-          <p>Nguyễn Khắc Sâm</p>
-          <p>0125859955</p>
+          <p>{giver}</p>
+          <p>{receiver}</p>
+          <p>02258855</p>
           <a
-          // href={
-          //   "https://www.google.com/maps/search/?api=1&query=10.752206,106.6274087&query_place_id=ChIJofr-9SosdTERlbh4EVWpi8g"
-          // }
+            href={`https://www.google.com/maps/search/?api=1&query=${address.lat},${address.long}&query_place_id=${address.place_id}`}
           >
             {address.formatted_address}
             <img src={rightIcon} width={size} height={size} />
           </a>
 
-          <p>Bắp cải</p>
-          <p>25</p>
+          <p>{vegetable}</p>
+          <p>{quantity}</p>
         </div>
       </div>
     </React.Fragment>
