@@ -13,6 +13,27 @@
   }
 }
 
+.styling{
+  display: "flex";
+  flex-direction: "column";
+  margin-right:5;
+}
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+
+a:hover {
+  text-decoration: underline;
+}
+
+a:active {
+  text-decoration: underline;
+}
+
 .App-header {
   background-color: #282c34;
   min-height: 100vh;
