@@ -27,12 +27,13 @@ function App() {
       setExchangeData({
         giver: data.fullNameHost,
         receiver: data.fullNameReceiver,
-        phone: "",
+        phone: data.receiverPhoneNumber,
         receiverAddress: data.receiverAddress,
         quantity: data.quantity,
         vegetable: data.vegNameReceive,
         qrcode: data.qrCode,
       });
+      console.log("result= ",data)
       APICalling.covertAddressToCondinate(data.receiverAddress).then((res) => {
         const resutl = res.data.results[0];
         const tmp = {
@@ -84,7 +85,7 @@ function App() {
           <div style={{ marginLeft: 10 }}>
             <p>{giver}</p>
             <p>{receiver}</p>
-            <p>02258855</p>
+            <p>{phone}</p>
             <a
               href={`https://www.google.com/maps/search/?api=1&query=${address.lat},${address.long}&query_place_id=${address.place_id}`}
             >
